@@ -7,3 +7,7 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+
+export const sessions = pgTable("sessions",{
+
+})
