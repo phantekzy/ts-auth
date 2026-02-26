@@ -2,8 +2,10 @@ import { Router } from "express";
 import argon2 from "argon2";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 
 const router = Router();
+//Signup
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   if (!email || password) {
@@ -33,4 +35,18 @@ router.post("/signup", async (req, res) => {
       .json({ error: "Could not create user. Email might be taken." });
   }
 });
+
+//Login
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: "Both Email and Password are required" });
+  }
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+  } catch (error) {}
+});
+
 export default router;
