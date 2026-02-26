@@ -3,6 +3,7 @@ import argon2 from "argon2";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
+import { error } from "node:console";
 
 const router = Router();
 //Signup
@@ -46,6 +47,13 @@ router.post("/login", async (req, res) => {
   }
   try {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    if (!user) {
+      return res.status(401).json({ error: "Incorrect Email or Password" });
+    }
+    const validPassword = await argon2.verify(user.passwordHash, password);
+    if (!validPassword) {
+      return res.status(401).json({ error: "Incorrect Email or Password" });
+    }
   } catch (error) {}
 });
 
