@@ -16,7 +16,12 @@ router.post("/signup", async (req, res) => {
         passwordHash: hash,
       })
       .returning();
-  } catch (error) {}
+
+    res.status(201).json({ message: "User created!", id: newUser?.id });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: "Email already exists" });
+  }
 });
 
 export default router;
