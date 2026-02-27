@@ -46,5 +46,8 @@ router.post("/login", async (req, res) => {
       .json({ error: "Both email and password are required" });
   }
     const [user] = await db.select().from(users).where(eq(users.email , email))
+    if(!user){
+        return res.status(401).json({error : "Invalid credentials"})
+    }
 });
 export default router;
