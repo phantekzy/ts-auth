@@ -21,7 +21,7 @@ router.post("/signup", async (req, res) => {
   }
   try {
     const hash = await argon2.hash(password);
-    const [newUser] = await db
+    const [newUser] = await 
       .insert(users)
       .values({
         email,
@@ -43,18 +43,8 @@ router.post("/login", async (req, res) => {
   if (!email || !password) {
     return res
       .status(400)
-      .json({ error: "Both Email and Password are required" });
+      .json({ error: "Both email and password are required" });
   }
-  try {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    if (!user) {
-      return res.status(401).json({ error: "Incorrect Email or Password" });
-    }
-    const validPassword = await argon2.verify(user.passwordHash, password);
-    if (!validPassword) {
-      return res.status(401).json({ error: "Incorrect Email or Password" });
-    }
-  } catch (error) {}
+    const [user] = await db.select().from(users).where(eq(users.email , email))
 });
-
 export default router;
