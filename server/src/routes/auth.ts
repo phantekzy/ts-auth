@@ -3,6 +3,7 @@ import argon2 from "argon2";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
 const router = Router();
 //Signup
@@ -52,5 +53,6 @@ router.post("/login", async (req, res) => {
   if (!validPassword) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
+  const sessionId = crypto.randomBytes(32).toString("hex");
 });
 export default router;
