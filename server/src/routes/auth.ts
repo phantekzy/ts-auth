@@ -3,7 +3,6 @@ import argon2 from "argon2";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
-import { error } from "node:console";
 
 const router = Router();
 //Signup
@@ -21,7 +20,7 @@ router.post("/signup", async (req, res) => {
   }
   try {
     const hash = await argon2.hash(password);
-    const [newUser] = await 
+    const [newUser] = await db
       .insert(users)
       .values({
         email,
@@ -45,9 +44,13 @@ router.post("/login", async (req, res) => {
       .status(400)
       .json({ error: "Both email and password are required" });
   }
-    const [user] = await db.select().from(users).where(eq(users.email , email))
-    if(!user){
-        return res.status(401).json({error : "Invalid credentials"})
-    }
+  const [user] = await db.select().from(users).where(eq(users.email, email));
+  if (!user) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+  const validPassword = await argon2.verify(user.passwordHash, password);
+  if (!validPassword) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
 });
 export default router;
