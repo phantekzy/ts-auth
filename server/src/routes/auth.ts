@@ -1,7 +1,7 @@
 import { Router } from "express";
 import argon2 from "argon2";
 import { db } from "../db/index.js";
-import { users } from "../db/schema.js";
+import { sessions, users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import crypto from "node:crypto";
 
@@ -55,5 +55,11 @@ router.post("/login", async (req, res) => {
   }
   const sessionId = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+
+  await db.insert(sessions).values({
+    id: sessionId,
+    userId: user.id,
+    expiresAt,
+  });
 });
 export default router;
