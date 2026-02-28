@@ -61,5 +61,12 @@ router.post("/login", async (req, res) => {
     userId: user.id,
     expiresAt,
   });
+
+  res.cookie("auth_session", sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: expiresAt,
+  });
 });
 export default router;
