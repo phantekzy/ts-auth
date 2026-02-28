@@ -89,7 +89,9 @@ router.post("/logout", async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
+    res.json({ message: "Logged out successfully" });
   } catch (error) {}
+  res.status(500).json({ error: "Failed to logout" });
 });
 
 export default router;
