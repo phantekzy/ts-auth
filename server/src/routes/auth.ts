@@ -75,4 +75,10 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 });
+
+//Logout
+router.post("/logout", async (req, res) => {
+  const sessionId = req.cookies.auth_session;
+});
+
 export default router;
