@@ -82,6 +82,9 @@ router.post("/logout", async (req, res) => {
   if (!sessionId) {
     return res.status(204).end();
   }
+  try {
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
+  } catch (error) {}
 });
 
 export default router;
