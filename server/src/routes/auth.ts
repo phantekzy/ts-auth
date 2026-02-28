@@ -69,6 +69,10 @@ router.post("/login", async (req, res) => {
       sameSite: "lax",
       expires: expiresAt,
     });
-  } catch (error) {}
+
+    res.json({ message: "Logged in successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server Error" });
+  }
 });
 export default router;
