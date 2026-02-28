@@ -9,7 +9,7 @@ const router = Router();
 //Signup
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || password) {
+  if (!email || !password) {
     return res
       .status(400)
       .json({ error: "Both email and password are required!" });
