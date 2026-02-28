@@ -9,4 +9,8 @@ export const authenticate = async (
   if (!sessionId) {
     return res.status(401).json({ error: "Authentication required" });
   }
+  try {
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
