@@ -45,28 +45,30 @@ router.post("/login", async (req, res) => {
       .status(400)
       .json({ error: "Both email and password are required" });
   }
-  const [user] = await db.select().from(users).where(eq(users.email, email));
-  if (!user) {
-    return res.status(401).json({ error: "Invalid credentials" });
-  }
-  const validPassword = await argon2.verify(user.passwordHash, password);
-  if (!validPassword) {
-    return res.status(401).json({ error: "Invalid credentials" });
-  }
-  const sessionId = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    const validPassword = await argon2.verify(user.passwordHash, password);
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    const sessionId = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
-  await db.insert(sessions).values({
-    id: sessionId,
-    userId: user.id,
-    expiresAt,
-  });
+    await db.insert(sessions).values({
+      id: sessionId,
+      userId: user.id,
+      expiresAt,
+    });
 
-  res.cookie("auth_session", sessionId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    expires: expiresAt,
-  });
+    res.cookie("auth_session", sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: expiresAt,
+    });
+  } catch (error) {}
 });
 export default router;
