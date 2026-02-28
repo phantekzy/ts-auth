@@ -84,6 +84,11 @@ router.post("/logout", async (req, res) => {
   }
   try {
     await db.delete(sessions).where(eq(sessions.id, sessionId));
+    res.clearCookie("auth_session", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
   } catch (error) {}
 });
 
