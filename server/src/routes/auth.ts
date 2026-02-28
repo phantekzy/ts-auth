@@ -79,6 +79,9 @@ router.post("/login", async (req, res) => {
 //Logout
 router.post("/logout", async (req, res) => {
   const sessionId = req.cookies.auth_session;
+  if (!sessionId) {
+    return res.status(204).end();
+  }
 });
 
 export default router;
