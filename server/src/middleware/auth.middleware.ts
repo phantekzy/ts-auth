@@ -24,6 +24,10 @@ export const authenticate = async (
       .from(sessions)
       .innerJoin(users, eq(sessions.userId, users.id))
       .where(eq(sessions.id, sessionId));
+
+    if (!sessionWithUser || sessionWithUser.expiresAt < Date.now()) {
+      return res.status(401).json({ error: "Invalid or expired session" });
+    }
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
