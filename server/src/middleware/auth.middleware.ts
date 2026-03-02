@@ -28,6 +28,7 @@ export const authenticate = async (
     if (!sessionWithUser || sessionWithUser.expiresAt < Date.now()) {
       return res.status(401).json({ error: "Invalid or expired session" });
     }
+    (req as any) = sessionWithUser.user;
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
